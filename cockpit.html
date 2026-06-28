@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Minha Carreira — Cockpit do candidato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#0E1A2B;--navy-2:#15263C;--blue:#0A66C2;--blue-d:#004182;
+    --coral:#FF6B4A;--coral-d:#D24A2A;--teal:#16A88C;--teal-d:#0C6B58;
+    --paper:#F6F8FA;--card:#FFFFFF;--line:#E3E7EC;--ink:#0E1A2B;
+    --muted:#56687A;--muted-2:#8A93A3;--amber:#E0A53C;
+    --sans:'Inter',system-ui,sans-serif;--serif:'Fraunces',Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{margin:0;line-height:1.2}
+  a{color:inherit;text-decoration:none}
+  .app{display:flex;min-height:100vh}
+
+  /* SIDEBAR */
+  .side{width:236px;background:var(--navy);color:#cdd7e3;flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0}
+  .brand{display:flex;align-items:center;gap:9px;font-size:18px;font-weight:800;color:#fff;padding:20px 22px 18px;letter-spacing:-.01em}
+  .brand svg{width:21px;height:21px;color:var(--coral)}
+  .nav{padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+  .nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;font-size:14.5px;font-weight:500;color:#9fb0c4;cursor:pointer}
+  .nav a svg{width:19px;height:19px;flex-shrink:0}
+  .nav a:hover{background:rgba(255,255,255,.05);color:#e6edf5}
+  .nav a.on{background:var(--blue);color:#fff}
+  .side-foot{margin-top:auto;padding:16px 18px;border-top:1px solid #20324a;font-size:12.5px;color:#7a8aa0}
+  .plan-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,107,74,.16);color:#ff9d83;font-weight:600;font-size:12px;padding:5px 11px;border-radius:999px}
+
+  /* MAIN */
+  .main{margin-left:236px;flex:1;min-width:0}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:10}
+  .topbar h1{font-size:21px;font-weight:700}
+  .topbar .greet small{display:block;font-size:13px;color:var(--muted);font-weight:400;margin-top:2px}
+  .avatar{width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+  .content{padding:28px 32px 60px;max-width:1080px}
+  @media(max-width:860px){.side{position:static;width:100%;flex-direction:row;flex-wrap:wrap;height:auto}.nav{flex-direction:row;flex-wrap:wrap;flex:1}.side-foot{display:none}.main{margin-left:0}.content{padding:20px}}
+
+  .section{display:none}
+  .section.on{display:block}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .card h3{font-size:16px;font-weight:700}
+  .card .sub{font-size:13px;color:var(--muted);margin-top:3px}
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-d)}
+
+  /* SCORE */
+  .score-wrap{display:flex;gap:26px;align-items:center}
+  .gauge{position:relative;width:140px;height:140px;flex-shrink:0}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .val b{font-size:38px;font-weight:800;letter-spacing:-.02em}
+  .gauge .val span{font-size:12px;color:var(--muted);margin-top:-2px}
+  .pillars{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}
+  .pillar .pl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+  .pillar .pl b{font-weight:600}
+  .bar{height:7px;background:#eceef2;border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:999px;background:var(--blue)}
+  .bench{margin-top:16px;padding:12px 14px;background:#eaf1fb;border-radius:10px;font-size:13px;color:#1a4b86}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:999px;border:0;cursor:pointer;font-family:inherit;transition:.15s}
+  .btn-coral{background:var(--coral);color:#fff}.btn-coral:hover{filter:brightness(1.05)}
+  .btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:var(--blue-d)}
+  .btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--muted-2)}
+  .btn-sm{font-size:13px;padding:8px 13px}
+
+  /* OUTCOMES */
+  .out{display:flex;flex-direction:column;gap:2px}
+  .out .v{font-size:30px;font-weight:800;letter-spacing:-.02em}
+  .out .l{font-size:13px;color:var(--muted)}
+  .out .d{font-size:12px;font-weight:600;color:var(--teal-d);margin-top:4px}
+
+  /* PROFILE CHECKLIST */
+  .check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+  .check li{display:flex;align-items:center;gap:11px;font-size:14.5px}
+  .ck{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+  .ck.ok{background:#e1f3ec;color:var(--teal-d)}
+  .ck.warn{background:#fbf0dc;color:#9a6a12}
+  .ck.bad{background:#fbe4df;color:var(--coral-d)}
+  .check li .muted{color:var(--muted-2);font-size:12.5px;margin-left:auto}
+
+  /* AI SUGGESTION */
+  .sugg{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+  .sugg .top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .sugg h4{font-size:14.5px;font-weight:600}
+  .sugg p.why{font-size:13px;color:var(--muted);margin:4px 0 0}
+  .sugg .ai{margin-top:14px;background:#f4f7fb;border:1px solid #dde7f3;border-radius:10px;padding:13px 15px;font-size:14px;line-height:1.55;display:none}
+  .sugg .ai.show{display:block}
+  .sugg .ai .tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--coral-d);display:block;margin-bottom:6px}
+  .strength{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .strength .big{font-size:30px;font-weight:800}
+
+  /* MESSAGES */
+  .msg{display:grid;grid-template-columns:300px 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);height:560px}
+  @media(max-width:820px){.msg{grid-template-columns:1fr;height:auto}}
+  .threads{border-right:1px solid var(--line);overflow-y:auto}
+  .thread{display:flex;gap:12px;padding:15px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+  .thread:hover{background:#f7f9fb}
+  .thread.on{background:#eaf1fb}
+  .thread .av{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
+  .thread .tx{min-width:0;flex:1}
+  .thread .tn{display:flex;justify-content:space-between;align-items:baseline}
+  .thread .tn b{font-size:14px;font-weight:600}
+  .thread .tn span{font-size:11px;color:var(--muted-2)}
+  .thread .role{font-size:11.5px;color:var(--blue-d);font-weight:600}
+  .thread .pv{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0;align-self:center}
+  .conv{display:flex;flex-direction:column;min-width:0}
+  .conv-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px}
+  .conv-head .av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff}
+  .conv-head b{font-size:15px;font-weight:600}.conv-head .role{font-size:12px;color:var(--muted)}
+  .bubbles{flex:1;overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:12px;background:#fbfcfd}
+  .b{max-width:74%;padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.5}
+  .b.them{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+  .b.me{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  .b .t{display:block;font-size:10.5px;opacity:.6;margin-top:5px}
+  .composer{display:flex;gap:10px;padding:14px 16px;border-top:1px solid var(--line)}
+  .composer input{flex:1;padding:11px 15px;border:1px solid var(--line);border-radius:999px;font-size:14px;font-family:inherit;outline:none}
+  .composer input:focus{border-color:var(--blue)}
+  .team-send{margin-top:16px;border:1px dashed var(--blue);background:#eef5fc;border-radius:12px;padding:14px 16px}
+  .team-send .lbl{font-size:12px;font-weight:700;color:var(--blue-d);text-transform:uppercase;letter-spacing:.05em}
+  .team-send .row{display:flex;gap:10px;margin-top:10px}
+  .team-send input{flex:1;padding:9px 13px;border:1px solid #cfe;border-radius:8px;font-size:13.5px;font-family:inherit}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg>
+      <span style="letter-spacing:-.01em"><span style="font-weight:400">Minha</span> Carreira</span>
+    </div>
+    <nav class="nav">
+      <a class="on" data-sec="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg> Visão geral</a>
+      <a data-sec="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg> Meu perfil</a>
+      <a data-sec="jobfit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg> Aderência à vaga</a>
+      <a data-sec="messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg> Mensagens <span class="dot" style="margin-left:auto"></span></a>
+      <a data-sec="community"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3 3-5 7-5s7 2 7 5"/><path d="M17 4a3 3 0 0 1 0 6"/></svg> Comunidade</a>
+    </nav>
+    <div class="side-foot">
+      <span class="plan-pill">● Plano Anual</span>
+      <div style="margin-top:10px">Renova em 28/06/2027</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="greet">
+        <h1 id="secTitle">Olá, Guilherme</h1>
+        <small id="secSub">Aqui está o panorama da sua carreira esta semana.</small>
+      </div>
+      <div class="avatar">GT</div>
+    </div>
+
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <section class="section on" id="overview">
+        <div class="grid2">
+          <!-- SCORE -->
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+              <div><span class="eyebrow">Seu score no LinkedIn</span><h3 style="margin-top:5px">Social Selling Index</h3></div>
+              <button class="btn btn-ghost btn-sm" id="refreshSsi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg> Atualizar</button>
+            </div>
+            <div class="score-wrap">
+              <div class="gauge">
+                <svg width="140" height="140" viewBox="0 0 140 140">
+                  <circle cx="70" cy="70" r="60" fill="none" stroke="#eceef2" stroke-width="14"/>
+                  <circle id="ring" cx="70" cy="70" r="60" fill="none" stroke="var(--blue)" stroke-width="14" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377"/>
+                </svg>
+                <div class="val"><b id="ssiNum">0</b><span>de 100</span></div>
+              </div>
+              <div class="pillars" id="pillars"></div>
+            </div>
+            <div class="bench">A média da sua rede é <b>54</b>. Você está <b>acima</b> — mas os 32 pontos que faltam são onde mora a visibilidade.</div>
+          </div>
+
+          <!-- OUTCOMES -->
+          <div class="card">
+            <span class="eyebrow">O que de fato importa</span>
+            <h3 style="margin-top:5px">Resultado, não vaidade</h3>
+            <p class="sub">SSI não te chama para entrevista. Isto sim:</p>
+            <div class="grid3" style="margin-top:18px">
+              <div class="out"><div class="v">11</div><div class="l">Respostas de recrutador</div><div class="d">+6 na semana</div></div>
+              <div class="out"><div class="v">7</div><div class="l">Conversas reais</div><div class="d">3 em andamento</div></div>
+              <div class="out"><div class="v">2</div><div class="l">Entrevistas</div><div class="d">meta: 3</div></div>
+            </div>
+            <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--line)">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Força do perfil</span><b id="strengthPct2">62%</b></div>
+              <div class="bar"><i style="width:62%;background:var(--coral)"></i></div>
+              <button class="btn btn-coral btn-sm" style="margin-top:16px" onclick="go('profile')">Aprimorar meu perfil →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:22px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><span class="eyebrow">Mensagens recentes</span><h3 style="margin-top:5px">Sua central</h3></div>
+            <button class="btn btn-ghost btn-sm" onclick="go('messages')">Abrir central</button>
+          </div>
+          <div id="msgPreview" style="margin-top:16px;display:flex;flex-direction:column;gap:12px"></div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="section" id="profile">
+        <div class="grid2">
+          <div class="card">
+            <span class="eyebrow">Diagnóstico do perfil</span>
+            <h3 style="margin-top:5px">Onde você está hoje</h3>
+            <div class="strength" style="margin-top:18px">
+              <div class="big" id="strengthPct">62%</div>
+              <div style="flex:1"><div class="bar"><i id="strengthBar" style="width:62%;background:var(--coral)"></i></div><p class="sub" style="margin-top:8px">Complete os 3 pontos abaixo para chegar a <b>90%+</b> e destravar alcance.</p></div>
+            </div>
+            <ul class="check">
+              <li><span class="ck ok">✓</span> Foto profissional <span class="muted">ok</span></li>
+              <li><span class="ck bad">!</span> Headline otimizada <span class="muted">fraca</span></li>
+              <li><span class="ck warn">~</span> Seção "Sobre" <span class="muted">incompleta</span></li>
+              <li><span class="ck bad">!</span> Experiências com resultados <span class="muted">sem números</span></li>
+              <li><span class="ck ok">✓</span> Competências endossadas <span class="muted">8 endossos</span></li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="eyebrow">Copiloto de perfil</span>
+            <h3 style="margin-top:5px">Aprimore com a IA — e entenda o porquê</h3>
+            <p class="sub" style="margin-bottom:18px">A IA sugere; você aprende e aplica. Nada vai para o seu LinkedIn sem você.</p>
+
+            <div class="sugg">
+              <div class="top">
+                <div><h4>Sua headline está genérica</h4><p class="why">"Product Manager na Empresa X" não diz seu valor nem usa palavras que recrutador busca.</p></div>
+                <button class="btn btn-coral btn-sm" onclick="reveal(this)">Reescrever</button>
+              </div>
+              <div class="ai"><span class="tag">Sugestão da IA · headline</span>Product Manager • Transformo dados em produtos que crescem receita • B2B SaaS • ex-Itaú, Mercado Livre<br><span style="color:var(--muted);font-size:12.5px">Por quê: papel + impacto + setor + prova social = mais buscas e mais cliques de recrutador.</span></div>
+            </div>
+
+            <div class="sugg">
+              <div class="top">
+                <div><h4>Seu "Sobre" está incompleto</h4><p class="why">Faltam suas conquistas com números — é o que faz o recrutador parar de rolar.</p></div>
+                <button class="btn btn-coral btn-sm" onclick="reveal(this)">Completar</button>
+              </div>
+              <div class="ai"><span class="tag">Sugestão da IA · sobre</span>Ajudo empresas de SaaS B2B a transformar dados em decisão de produto. Nos últimos 4 anos, liderei lançamentos que aumentaram a receita recorrente em 38% e reduziram churn em 11pp...<br><span style="color:var(--muted);font-size:12.5px">Por quê: abre com a transformação que você gera e ancora em métricas concretas.</span></div>
+            </div>
+
+            <div class="sugg">
+              <div class="top">
+                <div><h4>Experiência sem impacto medível</h4><p class="why">Verbo de ação + número transforma "responsável por" em prova.</p></div>
+                <button class="btn btn-coral btn-sm" onclick="reveal(this)">Adicionar impacto</button>
+              </div>
+              <div class="ai"><span class="tag">Sugestão da IA · experiência</span>• Liderei a discovery e o lançamento do módulo de cobrança, gerando R$2,4M em receita recorrente no primeiro ano e adoção de 64% da base.<br><span style="color:var(--muted);font-size:12.5px">Por quê: começa com verbo forte e fecha com resultado em número.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOB FIT -->
+      <section class="section" id="jobfit">
+        <div class="card">
+          <span class="eyebrow">A IA como recrutador</span>
+          <h3 style="margin-top:5px">Cole a vaga dos sonhos. Veja seu fit e seus gaps.</h3>
+          <p class="sub" style="margin-bottom:16px">A IA cruza cada requisito da vaga com o seu perfil — e te ensina a fechar cada lacuna.</p>
+          <textarea id="jobText" placeholder="Cole aqui a descrição da vaga..." style="width:100%;min-height:120px;padding:14px;border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;resize:vertical"></textarea>
+          <button class="btn btn-blue" style="margin-top:14px" onclick="analyzeJob()">Analisar aderência</button>
+          <div id="jobResult" style="margin-top:20px;display:none">
+            <div class="score-wrap" style="align-items:flex-start">
+              <div style="text-align:center"><div style="font-size:46px;font-weight:800;color:var(--teal-d);line-height:1">73%</div><div class="sub">aderência</div></div>
+              <div class="pillars" style="gap:14px">
+                <div><div style="font-size:13px;font-weight:600;color:var(--teal-d);margin-bottom:6px">✓ Você já atende</div><div style="font-size:13.5px;color:var(--muted)">Gestão de produto B2B · métricas de retenção · trabalho com dados · stakeholders C-level</div></div>
+                <div><div style="font-size:13px;font-weight:600;color:var(--coral-d);margin-bottom:6px">! Gaps a fechar</div><div style="font-size:13.5px;color:var(--muted)">Experiência com PLG · inglês evidenciado no perfil · 1 case de growth quantificado</div></div>
+              </div>
+            </div>
+            <div class="bench" style="background:#fdeee9;color:var(--coral-d)">Plano do copiloto: 3 ajustes no seu perfil + 1 post sobre growth fecham ~18% de gap. Quer que eu monte?</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMMUNITY -->
+      <section class="section" id="community">
+        <div class="card"><span class="eyebrow">Comunidade</span><h3 style="margin-top:5px">Você não sobe sozinho</h3><p class="sub" style="margin-top:8px">Rede que engaja seu conteúdo, endosso de habilidades, hall da fama e Academy. (Em construção neste protótipo.)</p></div>
+      </section>
+
+      <!-- MESSAGES -->
+      <section class="section" id="messages">
+        <div class="msg">
+          <div class="threads" id="threads"></div>
+          <div class="conv">
+            <div class="conv-head" id="convHead"></div>
+            <div class="bubbles" id="bubbles"></div>
+            <form class="composer" id="composer">
+              <input id="msgInput" placeholder="Escreva uma mensagem..." autocomplete="off"/>
+              <button class="btn btn-blue" type="submit">Enviar</button>
+            </form>
+          </div>
+        </div>
+        <div class="team-send">
+          <span class="lbl">Central de envio · equipe Minha Carreira</span>
+          <div style="font-size:13px;color:var(--muted);margin-top:6px">Envie uma mensagem direta para este candidato (demonstra o lado da plataforma → candidato).</div>
+          <div class="row">
+            <input id="teamMsg" placeholder="Mensagem da equipe para o candidato..." autocomplete="off"/>
+            <button class="btn btn-coral btn-sm" onclick="teamSend()">Enviar ao candidato</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---- navegação entre seções ----
+  var titles = {
+    overview:['Olá, Guilherme','Aqui está o panorama da sua carreira esta semana.'],
+    profile:['Meu perfil','Aprimore seu perfil com o copiloto — e aprenda o porquê.'],
+    jobfit:['Aderência à vaga','A IA age como recrutador e mostra seus gaps.'],
+    community:['Comunidade','Rede, endossos e Academy.'],
+    messages:['Mensagens','Sua central de mensagens diretas.']
+  };
+  function go(sec){
+    document.querySelectorAll('.section').forEach(function(s){s.classList.toggle('on',s.id===sec)});
+    document.querySelectorAll('.nav a').forEach(function(a){a.classList.toggle('on',a.dataset.sec===sec)});
+    document.getElementById('secTitle').textContent = titles[sec][0];
+    document.getElementById('secSub').textContent = titles[sec][1];
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('.nav a').forEach(function(a){a.addEventListener('click',function(){go(a.dataset.sec)})});
+
+  // ---- SSI gauge ----
+  var C = 2*Math.PI*60;
+  var ring = document.getElementById('ring');
+  var pillarsData = [['Marca profissional',19],['Encontrar as pessoas certas',14],['Engajar com insights',17],['Construir relacionamentos',18]];
+  function renderPillars(){
+    document.getElementById('pillars').innerHTML = pillarsData.map(function(p){
+      return '<div class="pillar"><div class="pl"><span>'+p[0]+'</span><b>'+p[1]+'/25</b></div><div class="bar"><i style="width:'+(p[1]/25*100)+'%"></i></div></div>';
+    }).join('');
+  }
+  function setSsi(score){
+    ring.style.transition='stroke-dashoffset 1s ease';
+    ring.style.strokeDashoffset = C*(1-score/100);
+    var n=document.getElementById('ssiNum'), cur=parseInt(n.textContent,10)||0, step=(score-cur)/20, i=0;
+    var iv=setInterval(function(){i++;cur+=step;n.textContent=Math.round(cur);if(i>=20){n.textContent=score;clearInterval(iv)}},30);
+  }
+  renderPillars(); setTimeout(function(){setSsi(68)},250);
+  document.getElementById('refreshSsi').addEventListener('click',function(){
+    pillarsData=[['Marca profissional',21],['Encontrar as pessoas certas',15],['Engajar com insights',18],['Construir relacionamentos',18]];
+    renderPillars(); setSsi(72);
+    this.innerHTML='✓ Atualizado';
+  });
+
+  // ---- revelar sugestão IA ----
+  function reveal(btn){
+    var ai = btn.closest('.sugg').querySelector('.ai');
+    ai.classList.add('show'); btn.textContent='Aplicado ✓'; btn.disabled=true; btn.style.opacity=.7;
+  }
+
+  // ---- aderência à vaga ----
+  function analyzeJob(){
+    if(!document.getElementById('jobText').value.trim()){document.getElementById('jobText').focus();return;}
+    document.getElementById('jobResult').style.display='block';
+  }
+
+  // ---- MENSAGENS ----
+  var threads = [
+    {id:'equipe',name:'Equipe Minha Carreira',role:'Onboarding',color:'#0A66C2',unread:true,
+     msgs:[{f:'them',t:'Bem-vindo! Seu diagnóstico está pronto. Comece pela headline — é o ajuste de maior impacto. Qualquer dúvida, é só responder aqui.',time:'09:12'}]},
+    {id:'ana',name:'Ana Souza',role:'Mentora de carreira',color:'#16A88C',unread:true,
+     msgs:[{f:'them',t:'Oi Guilherme! Vi seu perfil. Bora ajustar a headline e montar 1 post sobre growth nesta semana?',time:'10:40'},
+           {f:'me',t:'Bora! Curti a sugestão da IA. Posso te mandar o rascunho hoje?',time:'10:44'},
+           {f:'them',t:'Perfeito. Me manda que eu reviso antes de você publicar.',time:'10:45'}]}
+  ];
+  var active='ana';
+  function initials(n){return n.split(' ').slice(0,2).map(function(w){return w[0]}).join('').toUpperCase()}
+  function renderThreads(){
+    document.getElementById('threads').innerHTML = threads.map(function(t){
+      var last=t.msgs[t.msgs.length-1];
+      return '<div class="thread'+(t.id===active?' on':'')+'" onclick="openThread(\''+t.id+'\')">'+
+        '<div class="av" style="background:'+t.color+'">'+initials(t.name)+'</div>'+
+        '<div class="tx"><div class="tn"><b>'+t.name+'</b><span>'+last.time+'</span></div>'+
+        '<div class="role">'+t.role+'</div><div class="pv">'+last.t+'</div></div>'+
+        (t.unread?'<span class="dot"></span>':'')+'</div>';
+    }).join('');
+  }
+  function renderConv(){
+    var t=threads.find(function(x){return x.id===active});
+    document.getElementById('convHead').innerHTML='<div class="av" style="background:'+t.color+'">'+initials(t.name)+'</div><div><b>'+t.name+'</b><div class="role">'+t.role+'</div></div>';
+    document.getElementById('bubbles').innerHTML=t.msgs.map(function(m){return '<div class="b '+m.f+'">'+m.t+'<span class="t">'+m.time+'</span></div>'}).join('');
+    var bb=document.getElementById('bubbles'); bb.scrollTop=bb.scrollHeight;
+  }
+  function openThread(id){active=id;var t=threads.find(function(x){return x.id===id});t.unread=false;renderThreads();renderConv()}
+  function nowt(){var d=new Date(2026,5,28,11,2);return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+  document.getElementById('composer').addEventListener('submit',function(e){
+    e.preventDefault();var inp=document.getElementById('msgInput');if(!inp.value.trim())return;
+    threads.find(function(x){return x.id===active}).msgs.push({f:'me',t:inp.value,time:nowt()});
+    inp.value='';renderThreads();renderConv();renderPreview();
+  });
+  function teamSend(){
+    var inp=document.getElementById('teamMsg');if(!inp.value.trim())return;
+    var t=threads.find(function(x){return x.id==='equipe'});
+    t.msgs.push({f:'them',t:inp.value,time:nowt()});t.unread=true;active='equipe';
+    inp.value='';renderThreads();renderConv();renderPreview();
+  }
+  function renderPreview(){
+    document.getElementById('msgPreview').innerHTML = threads.map(function(t){
+      var last=t.msgs[t.msgs.length-1];
+      return '<div style="display:flex;gap:12px;align-items:center"><div class="av" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;background:'+t.color+'">'+initials(t.name)+'</div>'+
+        '<div style="min-width:0;flex:1"><div style="font-size:14px;font-weight:600">'+t.name+'</div><div style="font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+last.t+'</div></div>'+
+        (t.unread?'<span class="dot"></span>':'')+'</div>';
+    }).join('');
+  }
+  renderThreads();renderConv();renderPreview();
+</script>
+</body>
+</html>

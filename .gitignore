@@ -1,0 +1,11 @@
+# Banco local do app.py (não versionar)
+minhacarreira.db
+# Bundle de upload manual (não precisa no git)
+cf-deploy.zip
+# Segredos — nunca versionar
+*.env
+.env
+# Lixo
+__pycache__/
+*.pyc
+.DS_Store

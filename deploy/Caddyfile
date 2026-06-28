@@ -1,0 +1,8 @@
+# Caddy faz o HTTPS automático (Let's Encrypt) e encaminha para o app.py.
+# Pré-requisitos: DNS de mcarreira.com.br apontando para o IP deste servidor,
+# e portas 80 e 443 abertas.
+
+mcarreira.com.br, www.mcarreira.com.br {
+    encode gzip
+    reverse_proxy localhost:4173
+}

@@ -1,0 +1,17 @@
+# systemd: mantém o app.py rodando e reinicia se cair.
+# Instalar em /etc/systemd/system/minhacarreira.service
+[Unit]
+Description=Minha Carreira (app.py)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/minhacarreira/norte
+EnvironmentFile=/etc/minhacarreira.env
+ExecStart=/usr/bin/python3 /opt/minhacarreira/norte/app.py
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

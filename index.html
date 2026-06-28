@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minha Carreira — o copiloto que te ensina a ser encontrado no LinkedIn</title>
+  <meta name="description" content="O copiloto de presença no LinkedIn que te ensina a ser encontrado por quem contrata. Sem robôs, sem risco de ban. Sua carreira, no seu comando." />
+  <link rel="canonical" href="https://mcarreira.com.br/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mcarreira.com.br/" />
+  <meta property="og:title" content="Minha Carreira — o copiloto que te ensina a ser encontrado no LinkedIn" />
+  <meta property="og:description" content="A forma mais simples de usar o seu LinkedIn para conseguir um novo emprego. Sem robôs, sem risco de ban." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --navy:#0E1A2B; --navy-2:#15263C; --ink:#0E1A2B;
+      --paper:#F6F8FA; --card:#FFFFFF; --line:#E3E7EC;
+      --muted:#56687A; --muted-2:#8A93A3;
+      --blue:#0A66C2; --blue-d:#004182;
+      --coral:#FF6B4A; --coral-d:#D24A2A; --coral-l:#FF8A6E;
+      --teal:#16A88C; --teal-d:#0C6B58;
+      --danger:#C0463B;
+      --radius:14px; --maxw:1080px;
+      --sans:'Inter',system-ui,sans-serif; --serif:'Fraunces',Georgia,serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+    h1,h2,h3{line-height:1.15;margin:0}
+    p{margin:0}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+    .serif{font-family:var(--serif);font-weight:600}
+    .eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-d)}
+    .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;padding:13px 22px;border-radius:999px;border:0;cursor:pointer;transition:.15s}
+    .btn-gold{background:var(--coral);color:#fff}
+    .btn-gold:hover{filter:brightness(1.05)}
+    .btn-ghost{background:transparent;border:1.5px solid rgba(255,255,255,.25);color:#fff}
+    .btn-ghost:hover{border-color:rgba(255,255,255,.5)}
+    .btn-dark{background:var(--blue);color:#fff}
+    .btn-dark:hover{background:var(--blue-d)}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:50;background:rgba(251,250,246,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;letter-spacing:-.01em}
+    .star{width:22px;height:22px;color:var(--coral)}
+    .nav-links{display:flex;gap:28px;font-size:14px;font-weight:500;color:var(--muted)}
+    .nav-links a:hover{color:var(--ink)}
+    @media(max-width:760px){.nav-links{display:none}}
+
+    /* HERO */
+    .hero{background:radial-gradient(120% 100% at 80% -10%, #1c3251 0%, var(--navy) 55%);color:#fff;position:relative;overflow:hidden}
+    .hero .wrap{padding-top:78px;padding-bottom:84px;position:relative;z-index:2}
+    .pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#cfe;background:rgba(22,168,140,.14);border:1px solid rgba(22,168,140,.35);padding:6px 14px;border-radius:999px}
+    .hero h1{font-size:54px;font-weight:800;letter-spacing:-.025em;margin-top:22px;max-width:18ch}
+    .hero h1 em{font-family:var(--serif);font-style:normal;font-weight:600;color:var(--coral-l)}
+    .hero .sub{font-size:19px;color:#b9c4d4;margin-top:22px;max-width:54ch}
+    .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:34px}
+    .hero-note{font-size:13px;color:#8ea0b6;margin-top:16px;display:flex;gap:18px;flex-wrap:wrap}
+    .hero-note span{display:flex;align-items:center;gap:6px}
+    .tick{color:var(--teal)}
+    @media(max-width:760px){.hero h1{font-size:38px}.hero .sub{font-size:17px}}
+
+    /* glow star */
+    .glow{position:absolute;top:-80px;right:-60px;width:420px;height:420px;background:radial-gradient(circle, rgba(255,107,74,.20), transparent 60%);z-index:1}
+
+    /* LOGOS / trust */
+    .trust{border-bottom:1px solid var(--line);background:var(--card)}
+    .trust .wrap{padding:20px 24px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;justify-content:center;color:var(--muted-2);font-size:13px;font-weight:600}
+
+    /* SECTION */
+    section{padding:84px 0}
+    .sec-head{max-width:62ch;margin:0 auto 52px;text-align:center}
+    .sec-head h2{font-size:36px;font-weight:800;letter-spacing:-.02em}
+    .sec-head h2 em{font-family:var(--serif);font-style:normal;font-weight:600}
+    .sec-head p{font-size:18px;color:var(--muted);margin-top:14px}
+
+    /* VS comparison */
+    .vs{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:920px;margin:0 auto}
+    @media(max-width:760px){.vs{grid-template-columns:1fr}}
+    .vs-card{border-radius:18px;padding:30px;border:1px solid var(--line)}
+    .vs-bad{background:#fbf1ef;border-color:#eccfca}
+    .vs-good{background:#0E1A2B;color:#fff;border-color:#0E1A2B}
+    .vs-card h3{font-size:15px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:18px}
+    .vs-bad h3{color:var(--danger)}
+    .vs-good h3{color:var(--coral-l)}
+    .vs-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
+    .vs-card li{display:flex;gap:11px;font-size:15.5px;align-items:flex-start}
+    .vs-bad li{color:#6b4a44}
+    .vs-good li{color:#cdd7e3}
+    .ico{flex:0 0 20px;margin-top:2px;font-weight:800}
+    .vs-bad .ico{color:var(--danger)}
+    .vs-good .ico{color:var(--teal)}
+
+    /* STEPS */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+    @media(max-width:760px){.steps{grid-template-columns:1fr}}
+    .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+    .step .n{width:38px;height:38px;border-radius:10px;background:#FFE7E0;color:var(--coral-d);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px}
+    .step h3{font-size:19px;font-weight:700;margin:18px 0 8px}
+    .step p{color:var(--muted);font-size:15.5px}
+    .step .tag{margin-top:16px;font-size:12.5px;font-weight:600;color:var(--teal-d);background:#e6f5f0;padding:5px 11px;border-radius:999px;display:inline-block}
+    .moat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;max-width:980px;margin:0 auto}
+    @media(max-width:760px){.moat-grid{grid-template-columns:1fr}}
+
+    /* DASHBOARD mock */
+    .dash{background:var(--navy);border-radius:20px;padding:30px 26px;color:#fff;max-width:880px;margin:36px auto 0;border:1px solid #1f3450}
+    .compare{display:grid;grid-template-columns:1fr 1fr}
+    .col{padding:4px 26px}
+    .col-vanity{opacity:.6}
+    .col-result{border-left:1px solid #24344b}
+    .col-h{font-size:13px;font-weight:600;color:#9fb0c4;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .lab{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
+    .lab-gray{background:#1e3047;color:#7e90a8}
+    .lab-hot{background:rgba(255,107,74,.18);color:#ff9d83}
+    .mrow{display:flex;align-items:baseline;gap:13px;padding:12px 0;border-bottom:1px solid #1e3047}
+    .mrow:last-of-type{border-bottom:0}
+    .mrow b{font-size:30px;font-weight:800;letter-spacing:-.02em;min-width:74px}
+    .mrow .ml{font-size:13.5px;line-height:1.3}
+    .mrow .ml i{display:block;font-style:normal;font-size:12px;margin-top:3px}
+    .col-vanity b{color:#67798f}
+    .col-vanity .ml{color:#8294a8}
+    .col-vanity .ml i{color:#5f7187}
+    .col-result b{color:#fff}
+    .col-result .ml{color:#c6d2e0}
+    .col-result .ml i{color:#5EEAD4;font-weight:600}
+    .col-foot{font-size:12.5px;margin:16px 0 0;line-height:1.5}
+    .col-vanity .col-foot{color:#67798f}
+    .col-result .col-foot{color:#9fb0c4}
+    @media(max-width:680px){.compare{grid-template-columns:1fr}.col-result{border-left:0;border-top:1px solid #24344b;margin-top:8px;padding-top:18px}}
+
+    /* PRICING */
+    .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+    @media(max-width:860px){.price-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto}}
+    .plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px;display:flex;flex-direction:column}
+    .plan.feat{border:2px solid var(--coral);box-shadow:0 18px 50px -28px rgba(255,107,74,.5);position:relative}
+    .plan .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--coral);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px}
+    .plan h3{font-size:17px;font-weight:700}
+    .plan .price{font-size:40px;font-weight:800;letter-spacing:-.02em;margin:14px 0 2px}
+    .plan .price small{font-size:15px;font-weight:600;color:var(--muted)}
+    .plan .desc{color:var(--muted);font-size:14.5px;min-height:42px}
+    .plan ul{list-style:none;padding:0;margin:22px 0;display:flex;flex-direction:column;gap:11px;font-size:14.5px;flex:1}
+    .plan li{display:flex;gap:9px;align-items:flex-start}
+    .plan li .ck{color:var(--teal);font-weight:800;flex:0 0 16px}
+    .plan .btn{width:100%;justify-content:center}
+
+    /* FAQ */
+    .faq{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+    details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 22px}
+    summary{cursor:pointer;font-weight:600;font-size:16.5px;padding:18px 0;list-style:none;display:flex;justify-content:space-between;align-items:center}
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:'+';color:var(--blue-d);font-size:22px;font-weight:700}
+    details[open] summary::after{content:'–'}
+    details p{color:var(--muted);font-size:15.5px;padding:0 0 20px}
+
+    /* CTA band */
+    .band{background:linear-gradient(120% 100% at 20% 0%, #15263C, var(--navy));color:#fff;border-radius:24px;padding:56px 40px;text-align:center;max-width:920px;margin:0 auto}
+    .band h2{font-size:34px;font-weight:800;letter-spacing:-.02em}
+    .band p{color:#b9c4d4;font-size:18px;margin:14px auto 28px;max-width:48ch}
+    .form{display:flex;gap:10px;max-width:440px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+    .form input{flex:1;min-width:220px;padding:14px 16px;border-radius:999px;border:1px solid #2b3d56;background:#0b1626;color:#fff;font-size:15px;font-family:inherit}
+    .form input::placeholder{color:#7184a0}
+    .form .ok{color:var(--teal);font-weight:600;font-size:15px;width:100%}
+
+    /* FOOTER */
+    footer{padding:46px 0 60px;color:var(--muted-2);font-size:13.5px}
+    .foot-in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;border-top:1px solid var(--line);padding-top:28px}
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="wrap nav-in">
+      <div class="brand">
+        <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg>
+        <span style="letter-spacing:-.01em"><span style="font-weight:400">Minha</span> Carreira</span>
+      </div>
+      <div class="nav-links">
+        <a href="#diferenca">Por que diferente</a>
+        <a href="#como">Como funciona</a>
+        <a href="#resultado">Resultado</a>
+        <a href="#comunidade">Comunidade</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">Dúvidas</a>
+      </div>
+      <a href="/app.html" style="font-size:14px;font-weight:500;color:var(--muted);margin-right:18px">Entrar</a>
+      <a href="#cta" class="btn btn-dark">Diagnóstico grátis</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="glow"></div>
+    <div class="wrap">
+      <span class="pill">● Você no controle — nunca pedimos sua senha do LinkedIn</span>
+      <h1>A forma mais simples de usar o seu LinkedIn para <em>conseguir um novo emprego</em>.</h1>
+      <p class="sub">Cansado de mandar currículo e não ter resposta? Aqui você ganha um copiloto que te ensina a ser encontrado por quem contrata — e mede o que importa: <b>entrevistas, não curtidas</b>.</p>
+      <div class="hero-cta">
+        <a href="#cta" class="btn btn-gold">Começar pelo diagnóstico grátis →</a>
+        <a href="#como" class="btn btn-ghost">Ver como funciona</a>
+      </div>
+      <div class="hero-note">
+        <span><span class="tick">✓</span> Sem automação que toma ban</span>
+        <span><span class="tick">✓</span> Cancela quando quiser</span>
+        <span><span class="tick">✓</span> Mede entrevistas, não vaidade</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="trust">
+    <div class="wrap">
+      <span>Construído para quem busca recolocação séria •</span>
+      <span>+1.200 diagnósticos feitos</span>
+      <span>4,9★ de satisfação</span>
+      <span>0 contas banidas</span>
+    </div>
+  </div>
+
+  <!-- DIFERENÇA -->
+  <section id="diferenca">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">A categoria está errada</span>
+        <h2>A maioria vende um <em>robô</em>. Nós te damos um <em>copiloto</em>.</h2>
+        <p>Ferramentas de automação disparam convites no seu lugar — e colocam a sua conta na linha de tiro do LinkedIn. Aqui é o oposto: a gente te torna bom nisso.</p>
+      </div>
+      <div class="vs">
+        <div class="vs-card vs-bad">
+          <h3>Automação "faz por você"</h3>
+          <ul>
+            <li><span class="ico">✕</span> Pede o login/sessão do seu LinkedIn e age sozinha — risco real de ban da sua conta.</li>
+            <li><span class="ico">✕</span> Mede vaidade: SSI, curtidas, nº de conexões. Nada disso paga boleto.</li>
+            <li><span class="ico">✕</span> Posts genéricos de IA que todo mundo percebe que é robô.</li>
+            <li><span class="ico">✕</span> Você cancela e volta à estaca zero — não aprendeu nada.</li>
+          </ul>
+        </div>
+        <div class="vs-card vs-good">
+          <h3>Minha Carreira, o copiloto</h3>
+          <ul>
+            <li><span class="ico">✓</span> Você publica e conecta com as suas próprias mãos. Zero acesso à sua conta, zero risco.</li>
+            <li><span class="ico">✓</span> Mede o que importa: respostas de recrutador, conversas, entrevistas.</li>
+            <li><span class="ico">✓</span> Conteúdo com a <b>sua</b> voz — a IA puxa das suas histórias, não de templates.</li>
+            <li><span class="ico">✓</span> Você sai sabendo se posicionar pra sempre. A habilidade fica com você.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section id="como" style="background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Três passos. Você sempre com a <em>mão no leme</em>.</h2>
+        <p>Aqui ninguém aperta o botão por você. A gente te deixa rápido e bom — em minutos por dia.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="n">1</div>
+          <h3>Diagnóstico da sua carreira</h3>
+          <p>Em 5 minutos, mapeamos seu objetivo, seu perfil e quem precisa te encontrar. Você recebe um plano claro — de graça.</p>
+          <span class="tag">Top do funil · sem cartão</span>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <h3>Rascunha com você, ensina o porquê</h3>
+          <p>O copiloto sugere headline, "Sobre" e posts a partir das suas histórias — e explica a estratégia por trás de cada escolha. Você edita e aprende.</p>
+          <span class="tag">IA assistida, não automática</span>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <h3>Você publica. A gente mede o resultado.</h3>
+          <p>Você dá o "publicar" com 1 clique. A plataforma acompanha o que retornou de verdade: quem respondeu, quem chamou, quantas conversas viraram entrevista.</p>
+          <span class="tag">Outcome, não vaidade</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADO / dashboard -->
+  <section id="resultado">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">O que medimos</span>
+        <h2>Atividade não te emprega. <em>Resultado</em> sim.</h2>
+        <p>Todo mundo te mostra SSI subindo. Pergunta certa: quantas conversas reais com quem contrata você teve esta semana?</p>
+      </div>
+      <div class="dash">
+        <div class="compare">
+          <div class="col col-vanity">
+            <div class="col-h">Como os outros medem <span class="lab lab-gray">vaidade</span></div>
+            <div class="mrow"><b>74</b><div class="ml">SSI<i>+12 pts no mês</i></div></div>
+            <div class="mrow"><b>+318</b><div class="ml">Conexões<i>esta semana</i></div></div>
+            <div class="mrow"><b>1.402</b><div class="ml">Curtidas<i>no mês</i></div></div>
+            <p class="col-foot">Números que sobem — mas nenhum deles diz se você está mais perto de um emprego.</p>
+          </div>
+          <div class="col col-result">
+            <div class="col-h">Como a Minha Carreira mede <span class="lab lab-hot">resultado</span></div>
+            <div class="mrow"><b>11</b><div class="ml">Respostas de recrutador<i>+6 vs. semana passada</i></div></div>
+            <div class="mrow"><b>7</b><div class="ml">Conversas reais<i>3 em andamento</i></div></div>
+            <div class="mrow"><b>2</b><div class="ml">Entrevistas marcadas<i>meta do mês: 3</i></div></div>
+            <p class="col-foot">O que de fato te aproxima da próxima oportunidade — rastreado movimento a movimento.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMUNIDADE / MOAT -->
+  <section id="comunidade">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">O que ninguém copia</span>
+        <h2>Você não sobe <em>sozinho</em>.</h2>
+        <p>Feature qualquer clone copia em uma semana. O que não se copia é a rede: uma comunidade de membros reais que se apoiam e uma Academy que te forma. <b>Cada novo membro aumenta o alcance de todo mundo.</b></p>
+      </div>
+      <div class="moat-grid">
+        <div class="step">
+          <div class="n"><svg class="star" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg></div>
+          <h3>Rede que engaja de verdade</h3>
+          <p>Membros reais apoiam o conteúdo uns dos outros. Mais gente na rede = mais alcance e prova social pra você. Efeito que cresce sozinho.</p>
+          <span class="tag">Efeito de rede</span>
+        </div>
+        <div class="step">
+          <div class="n"><svg class="star" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg></div>
+          <h3>Academy de posicionamento</h3>
+          <p>Trilha de aulas e cursos que te tornam bom de verdade — não um dependente de robô. Conteúdo proprietário que a assinatura sozinha não substitui.</p>
+          <span class="tag">Conteúdo que ensina</span>
+        </div>
+        <div class="step">
+          <div class="n"><svg class="star" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg></div>
+          <h3>Hall da fama</h3>
+          <p>Quem foi contratado vira destaque da comunidade. Prova social que se renova toda semana e atrai novos membros sozinha.</p>
+          <span class="tag">Flywheel de prova social</span>
+        </div>
+        <div class="step">
+          <div class="n"><svg class="star" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg></div>
+          <h3>Ranking de evolução</h3>
+          <p>Seu progresso de posicionamento ganha ranking na rede. Motiva, retém e transforma a jornada solitária da recolocação em movimento coletivo.</p>
+          <span class="tag">Engajamento e retenção</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANOS -->
+  <section id="planos" style="background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Planos</span>
+        <h2>Um produto só. <em>Quanto mais tempo, menos por mês.</em></h2>
+        <p>Tudo incluído em qualquer plano: copiloto, comunidade e Academy. Você escolhe só por quanto tempo se compromete — e economiza.</p>
+      </div>
+      <div class="price-grid">
+        <div class="plan">
+          <h3>Mensal</h3>
+          <div class="price">R$59<small>/mês</small></div>
+          <div class="desc">Cobrado todo mês. Cancele quando quiser.</div>
+          <ul>
+            <li><span class="ck">✓</span> Reescrita ilimitada de perfil</li>
+            <li><span class="ck">✓</span> Copiloto de posts com a sua voz</li>
+            <li><span class="ck">✓</span> Fila assistida de conexões</li>
+            <li><span class="ck">✓</span> Painel de resultado (entrevistas)</li>
+            <li><span class="ck">✓</span> Comunidade + Academy</li>
+          </ul>
+          <a href="#cta" class="btn btn-dark">Assinar mensal</a>
+        </div>
+        <div class="plan feat">
+          <span class="badge">Mais popular</span>
+          <h3>Semestral</h3>
+          <div class="price">R$49<small>/mês</small></div>
+          <div class="desc">R$294 a cada 6 meses · <b style="color:var(--coral-d)">1 mês grátis</b></div>
+          <ul>
+            <li><span class="ck">✓</span> Tudo do plano Minha Carreira</li>
+            <li><span class="ck">✓</span> 1 mês grátis — economize R$60</li>
+            <li><span class="ck">✓</span> Preço por mês travado por 6 meses</li>
+            <li><span class="ck">✓</span> Comunidade + Academy completas</li>
+          </ul>
+          <a href="#cta" class="btn btn-gold">Assinar semestral</a>
+        </div>
+        <div class="plan">
+          <h3>Anual</h3>
+          <div class="price">R$39<small>/mês</small></div>
+          <div class="desc">R$468 no ano · <b style="color:var(--coral-d)">4 meses grátis</b></div>
+          <ul>
+            <li><span class="ck">✓</span> Tudo do plano Minha Carreira</li>
+            <li><span class="ck">✓</span> 4 meses grátis — economize R$240</li>
+            <li><span class="ck">✓</span> Preço por mês travado por 12 meses</li>
+            <li><span class="ck">✓</span> Comunidade + Academy completas</li>
+          </ul>
+          <a href="#cta" class="btn btn-dark">Assinar anual</a>
+        </div>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:14.5px;margin-top:28px">Na dúvida? Comece pelo <a href="#cta" style="color:var(--blue);font-weight:500">diagnóstico grátis</a> — sem cartão. Mentoria 1:1 disponível como add-on.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Confiança primeiro</span>
+        <h2>As perguntas que você <em>deveria</em> fazer</h2>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>Vocês vão pedir meu login do LinkedIn?</summary>
+          <p>Nunca. A plataforma não guarda sua senha nem sua sessão e não age na sua conta sozinha. Tudo que sai do seu perfil sai porque você clicou em "publicar". É exatamente por isso que sua conta não corre risco de bloqueio.</p>
+        </details>
+        <details>
+          <summary>Então isso não é "automação"? Não vou economizar tempo?</summary>
+          <p>Você economiza o tempo certo: o de pensar no que escrever e em quem abordar. O copiloto te entrega o rascunho e a estratégia em segundos; o "enviar" leva 1 clique seu. Minutos por dia — sem virar uma operação de risco.</p>
+        </details>
+        <details>
+          <summary>Por que medir "respostas" e não SSI ou conexões?</summary>
+          <p>Porque SSI não te chama para entrevista. A plataforma conecta cada movimento ao que importa — quem respondeu, quem te chamou, quantas conversas viraram processo seletivo. É o único número que paga o boleto.</p>
+        </details>
+        <details>
+          <summary>E se eu cancelar?</summary>
+          <p>Você cancela com um clique, sem multa. E diferente de um robô, você leva embora a habilidade: aprendeu a se posicionar e isso não expira com a assinatura.</p>
+        </details>
+        <details>
+          <summary>Funciona pra quem não é da área de tech?</summary>
+          <p>Sim. O copiloto puxa da sua história e do seu setor. O diagnóstico grátis já te mostra, no seu contexto, o que mudar primeiro.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="wrap">
+      <div class="band">
+        <h2>Descubra seu norte em 5 minutos</h2>
+        <p>Faça o diagnóstico gratuito e receba seu plano de posicionamento hoje. Sem cartão, sem robô, sem risco.</p>
+        <form class="form" id="leadform">
+          <input type="email" id="email" placeholder="seu@email.com" required />
+          <button type="submit" class="btn btn-gold">Quero meu diagnóstico</button>
+          <div class="ok" id="okmsg" style="display:none"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot-in">
+      <div class="brand" style="font-size:16px">
+        <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg>
+        <span style="letter-spacing:-.01em"><span style="font-weight:400">Minha</span> Carreira</span>
+      </div>
+      <div>© 2026 Minha Carreira · O copiloto que te ensina a ser encontrado · feito com foco em resultado, não em vaidade</div>
+    </div>
+  </footer>
+
+  <script>
+    // Lead form
+    document.getElementById('leadform').addEventListener('submit', function(e){
+      e.preventDefault();
+      var email = document.getElementById('email');
+      var ok = document.getElementById('okmsg');
+      if(!email.value) return;
+      fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email.value})}).catch(function(){});
+      email.style.display='none';
+      e.target.querySelector('button').style.display='none';
+      ok.style.display='block';
+      ok.innerHTML = '✓ Pronto! Recebemos seu e-mail. <a href="/app.html" style="color:var(--teal);font-weight:600">Criar conta e começar →</a>';
+    });
+  </script>
+</body>
+</html>
