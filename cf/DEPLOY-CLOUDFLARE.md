@@ -30,11 +30,11 @@ Bundle a publicar = esta pasta `cf/` (contém `index.html`, `app.html`, `functio
 No projeto Pages → **Settings**:
 - **Bindings → Add → D1 database**: nome da variável **`DB`** → selecione `minhacarreira`.
 - **Variables and Secrets → Add** (marque como *Secret* os sensíveis):
-  - `ANTHROPIC_API_KEY` = sua chave do Claude
+  - `GEMINI_API_KEY` = sua chave do Google AI Studio (grátis — aistudio.google.com → "Get API key")
   - `LINKEDIN_CLIENT_ID` = do app do LinkedIn
   - `LINKEDIN_CLIENT_SECRET` = do app do LinkedIn
   - `LINKEDIN_REDIRECT` = `https://mcarreira.com.br/api/auth/linkedin/callback`
-  - `MC_MODEL` = `claude-sonnet-4-6` (opcional)
+  - `GEMINI_MODEL` = `gemini-2.0-flash` (opcional)
 - **Re-deploy** (Deployments → ⋯ → Retry deployment) para as variáveis/binding valerem.
 
 ## 5. Domínio personalizado
