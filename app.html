@@ -116,16 +116,11 @@
 <div class="auth" id="auth">
   <div class="auth-box">
     <div class="auth-brand"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg><span><span style="font-weight:400">Minha</span> Carreira</span></div>
-    <h2 id="authTitle">Entrar no seu cockpit</h2>
-    <p class="s" id="authSub">Acesse sua conta para continuar.</p>
-    <button class="btn" id="liBtn" style="width:100%;justify-content:center;background:#0A66C2;color:#fff;margin:4px 0 14px"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.74v20.52C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.74V1.74C24 .78 23.2 0 22.22 0z"/></svg> Entrar com LinkedIn</button>
-    <div style="text-align:center;font-size:12px;color:var(--muted-2);margin-bottom:16px">ou com e-mail</div>
+    <h2 style="margin:14px 0 4px">Entre com o LinkedIn para começar</h2>
+    <p class="s">Seu cockpit se conecta ao seu LinkedIn. Não há senha para criar — você autoriza pelo próprio LinkedIn, e a gente nunca vê sua senha.</p>
     <div class="err hidden" id="authErr"></div>
-    <div class="field" id="nameField"><label>Nome</label><input id="aName" placeholder="Seu nome"/></div>
-    <div class="field"><label>E-mail</label><input id="aEmail" type="email" placeholder="seu@email.com"/></div>
-    <div class="field"><label>Senha</label><input id="aPass" type="password" placeholder="••••••••"/></div>
-    <button class="btn btn-coral" id="authBtn">Entrar</button>
-    <div class="alt" id="authAlt"></div>
+    <button class="btn" id="liBtn" style="width:100%;justify-content:center;background:#0A66C2;color:#fff;margin-top:4px;padding:13px"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.74v20.52C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.74V1.74C24 .78 23.2 0 22.22 0z"/></svg> Entrar com LinkedIn</button>
+    <p style="text-align:center;font-size:12px;color:var(--muted-2);margin-top:14px">Sem risco de bloqueio · você no controle</p>
   </div>
 </div>
 
@@ -254,7 +249,7 @@
 </div>
 
 <script>
-var API='', token=localStorage.getItem('mc_token')||'', ME=null, OV=null, active=null, signupMode=false;
+var API='', token=localStorage.getItem('mc_token')||'', ME=null, OV=null, active=null;
 function api(path, method, body){
   return fetch(API+path,{method:method||'GET',headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},body:body?JSON.stringify(body):undefined})
     .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||('erro '+r.status));return j})});
@@ -262,22 +257,6 @@ function api(path, method, body){
 function $(id){return document.getElementById(id)}
 
 // ---- AUTH ----
-function renderAuthMode(){
-  $('authTitle').textContent=signupMode?'Criar sua conta':'Entrar no seu cockpit';
-  $('authSub').textContent=signupMode?'Comece sua jornada de recolocação.':'Acesse sua conta para continuar.';
-  $('authBtn').textContent=signupMode?'Criar conta':'Entrar';
-  $('nameField').classList.toggle('hidden',!signupMode);
-  $('authAlt').innerHTML=signupMode?'Já tem conta? <a id="sw">Entrar</a>':'Novo por aqui? <a id="sw">Criar conta</a>';
-  $('sw').onclick=function(){signupMode=!signupMode;renderAuthMode();$('authErr').classList.add('hidden')};
-}
-$('authBtn').onclick=function(){
-  var b=this;b.disabled=true;$('authErr').classList.add('hidden');
-  var payload={email:$('aEmail').value,password:$('aPass').value};
-  if(signupMode)payload.name=$('aName').value;
-  api(signupMode?'/api/signup':'/api/login','POST',payload).then(function(r){
-    token=r.token;localStorage.setItem('mc_token',token);boot();
-  }).catch(function(e){$('authErr').textContent=e.message;$('authErr').classList.remove('hidden')}).finally(function(){b.disabled=false});
-};
 $('liBtn').onclick=function(){window.location.href='/api/auth/linkedin/start'};
 $('logout').onclick=function(){api('/api/logout','POST').finally(function(){token='';localStorage.removeItem('mc_token');location.reload()})};
 
@@ -378,15 +357,15 @@ function boot(){
     if(ME.picture){$('avatar').innerHTML='<img src="'+ME.picture+'" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">'}else{$('avatar').textContent=ini(ME.name||ME.email)}
     $('secTitle').textContent='Olá, '+(ME.name?ME.name.split(' ')[0]:'');$('secSub').textContent=titles.overview[1];
     return loadOverview();
-  }).catch(function(){token='';localStorage.removeItem('mc_token');$('auth').classList.remove('hidden');$('shell').classList.add('hidden');renderAuthMode()});
+  }).catch(function(){token='';localStorage.removeItem('mc_token');$('auth').classList.remove('hidden');$('shell').classList.add('hidden')});
 }
 (function(){
   var q=new URLSearchParams(location.search);
   if(q.get('token')){token=q.get('token');localStorage.setItem('mc_token',token);history.replaceState({},'','/app.html')}
   var er=q.get('error');
-  if(er){var m={linkedin_off:'Login com LinkedIn ainda não configurado no servidor (defina LINKEDIN_CLIENT_ID).',linkedin_denied:'Login com LinkedIn cancelado.',linkedin_fail:'Falha ao conectar com o LinkedIn. Tente novamente.'}[er]||'Erro no login.';history.replaceState({},'','/app.html');setTimeout(function(){renderAuthMode();$('authErr').textContent=m;$('authErr').classList.remove('hidden')},50)}
+  if(er){var m={linkedin_off:'Login com LinkedIn ainda não configurado no servidor (defina LINKEDIN_CLIENT_ID e LINKEDIN_CLIENT_SECRET).',linkedin_denied:'Login com LinkedIn cancelado.',linkedin_fail:'Falha ao conectar com o LinkedIn. Tente novamente.'}[er]||'Erro no login.';history.replaceState({},'','/app.html');setTimeout(function(){$('authErr').textContent=m;$('authErr').classList.remove('hidden')},50)}
 })();
-if(token)boot();else{renderAuthMode()}
+if(token)boot();
 </script>
 </body>
 </html>
