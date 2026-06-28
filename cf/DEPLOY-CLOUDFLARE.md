@@ -28,13 +28,12 @@ Bundle a publicar = esta pasta `cf/` (contém `index.html`, `app.html`, `functio
 
 ## 4. Ligar o banco e os segredos
 No projeto Pages → **Settings**:
-- **Bindings → Add → D1 database**: nome da variável **`DB`** → selecione `minhacarreira`.
-- **Variables and Secrets → Add** (marque como *Secret* os sensíveis):
-  - `GEMINI_API_KEY` = sua chave do Google AI Studio (grátis — aistudio.google.com → "Get API key")
-  - `LINKEDIN_CLIENT_ID` = do app do LinkedIn
-  - `LINKEDIN_CLIENT_SECRET` = do app do LinkedIn
+- **Bindings → Add → D1 database**: variável **`DB`** → selecione `minhacarreira`.
+- **Bindings → Add → Workers AI**: variável **`AI`** — IA nativa da Cloudflare, **sem chave**.
+- **Variables and Secrets** (só quando for ligar o login do LinkedIn):
+  - `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`
   - `LINKEDIN_REDIRECT` = `https://mcarreira.com.br/api/auth/linkedin/callback`
-  - `GEMINI_MODEL` = `gemini-2.0-flash` (opcional)
+  - `AI_MODEL` (opcional) = `@cf/meta/llama-3.3-70b-instruct-fp8-fast`
 - **Re-deploy** (Deployments → ⋯ → Retry deployment) para as variáveis/binding valerem.
 
 ## 5. Domínio personalizado

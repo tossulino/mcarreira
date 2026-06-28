@@ -32,27 +32,17 @@ async function seedUser(env, uid, name) {
       `Bem-vindo, ${fname}! Seu cockpit está conectado ao LinkedIn. Informe seu SSI em 'Visão geral' → Atualizar (pegue em linkedin.com/sales/ssi) e peça à IA para criar sua headline em 'Meu perfil'.`).run();
 }
 
-async function gemini(env, system, user, maxTokens = 900, jsonMode = false) {
-  if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY não configurada no servidor.");
-  const model = env.GEMINI_MODEL || "gemini-2.0-flash";
-  const gen = { maxOutputTokens: maxTokens, temperature: 0.7 };
-  if (jsonMode) gen.responseMimeType = "application/json";
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-    method: "POST",
-    headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: system }] },
-      contents: [{ role: "user", parts: [{ text: user }] }],
-      generationConfig: gen,
-    }),
+async function ai(env, system, user, maxTokens = 900) {
+  if (!env.AI) throw new Error("Workers AI (binding 'AI') não configurado no servidor.");
+  const model = env.AI_MODEL || "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+  const resp = await env.AI.run(model, {
+    messages: [{ role: "system", content: system }, { role: "user", content: user }],
+    max_tokens: maxTokens,
   });
-  if (!r.ok) throw new Error("Falha na IA (" + r.status + ")");
-  const d = await r.json();
-  const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
-  return parts.map((p) => p.text || "").join("");
+  return (resp && (resp.response || resp.result)) || "";
 }
-async function geminiJson(env, system, user, maxTokens = 1000) {
-  const txt = await gemini(env, system, user, maxTokens, true);
+async function aiJson(env, system, user, maxTokens = 1000) {
+  const txt = await ai(env, system + " Responda APENAS com JSON válido, sem nenhum texto fora do JSON.", user, maxTokens);
   const m = txt.match(/\{[\s\S]*\}/);
   return JSON.parse(m ? m[0] : txt);
 }
@@ -60,7 +50,7 @@ async function geminiJson(env, system, user, maxTokens = 1000) {
 async function overview(env, u) {
   const s = await env.DB.prepare("SELECT * FROM ssi_snapshots WHERE user_id=? ORDER BY id DESC LIMIT 1").bind(u.id).first();
   const pr = await env.DB.prepare("SELECT * FROM profiles WHERE user_id=?").bind(u.id).first();
-  return { ssi: s || {}, profile: pr || {}, threads: await listThreads(env, u), ai_enabled: !!env.GEMINI_API_KEY };
+  return { ssi: s || {}, profile: pr || {}, threads: await listThreads(env, u), ai_enabled: !!env.AI };
 }
 async function listThreads(env, u) {
   const { results } = await env.DB.prepare("SELECT * FROM threads WHERE user_id=? ORDER BY id").bind(u.id).all();
@@ -194,7 +184,7 @@ export async function onRequest(context) {
       const sec = body.section || "headline";
       const sys = 'Você é um copiloto de carreira que melhora perfis de LinkedIn em PT-BR e ENSINA o porquê. Gere uma sugestão concreta e curta para a seção pedida, com a voz autêntica do profissional. Campos do JSON: {"sugestao":"...","porque":"..."}';
       const usr = `Seção: ${sec}. Setor: ${pr.setor}. Senioridade: ${pr.senioridade}. Objetivo: ${pr.objetivo}. Headline atual: ${pr.headline}. Sobre atual: ${pr.sobre || "(vazio)"}. Texto atual: ${body.current || ""}`;
-      let out; try { out = await geminiJson(env, sys, usr, 700); } catch (e) { return json({ error: e.message }, 502); }
+      let out; try { out = await aiJson(env, sys, usr, 700); } catch (e) { return json({ error: e.message }, 502); }
       await env.DB.prepare("INSERT INTO suggestions(user_id,secao,sugestao,porque) VALUES(?,?,?,?)").bind(u.id, sec, out.sugestao || "", out.porque || "").run();
       return json(out);
     }
@@ -202,7 +192,7 @@ export async function onRequest(context) {
       const pr = await env.DB.prepare("SELECT * FROM profiles WHERE user_id=?").bind(u.id).first();
       const sys = 'Você atua como um recrutador profissional. Cruze a vaga com o perfil e avalie a aderência em PT-BR. Campos do JSON: {"aderencia":<0-100 int>,"atende":["..."],"gaps":["..."],"plano":["passo 1","passo 2","passo 3"]}';
       const usr = `VAGA:\n${body.vaga || ""}\n\nPERFIL:\nHeadline: ${pr.headline}\nSobre: ${pr.sobre}\nSetor: ${pr.setor}\nSenioridade: ${pr.senioridade}\nObjetivo: ${pr.objetivo}`;
-      let out; try { out = await geminiJson(env, sys, usr, 1100); } catch (e) { return json({ error: e.message }, 502); }
+      let out; try { out = await aiJson(env, sys, usr, 1100); } catch (e) { return json({ error: e.message }, 502); }
       await env.DB.prepare("INSERT INTO jobfit(user_id,vaga,aderencia,atende,gaps,plano) VALUES(?,?,?,?,?,?)")
         .bind(u.id, body.vaga || "", parseInt(out.aderencia || 0), JSON.stringify(out.atende || []), JSON.stringify(out.gaps || []), JSON.stringify(out.plano || [])).run();
       return json(out);
@@ -211,7 +201,7 @@ export async function onRequest(context) {
       const pr = await env.DB.prepare("SELECT * FROM profiles WHERE user_id=?").bind(u.id).first();
       const sys = "Você é um copiloto que escreve posts de LinkedIn em PT-BR com a voz autêntica do profissional, focados em autoridade e resultado (sem clichê). Devolva só o texto do post.";
       const usr = `Tema: ${body.topic || ""}. Tom: ${body.tone || "profissional e direto"}. Setor: ${pr.setor}. Senioridade: ${pr.senioridade}.`;
-      let post; try { post = await gemini(env, sys, usr, 700); } catch (e) { return json({ error: e.message }, 502); }
+      let post; try { post = await ai(env, sys, usr, 700); } catch (e) { return json({ error: e.message }, 502); }
       return json({ post });
     }
     if (p === "/api/messages" && method === "POST") {
