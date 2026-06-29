@@ -20,6 +20,20 @@ async function userFromAuth(env, request) {
   if (!tok) return null;
   return await env.DB.prepare("SELECT u.* FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token=?").bind(tok).first();
 }
+// MODO TESTE: login desativado — usa um usuário demo compartilhado quando não há token.
+async function getDemoUser(env) {
+  let row = await env.DB.prepare("SELECT * FROM users WHERE email=?").bind("demo@mcarreira.local").first();
+  if (!row) {
+    const r = await env.DB.prepare("INSERT INTO users(email,name,picture,pw_salt,pw_hash) VALUES(?,?,?,?,?)").bind("demo@mcarreira.local", "Convidado", "", "", "").run();
+    await seedUser(env, r.meta.last_row_id, "Convidado");
+    row = await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(r.meta.last_row_id).first();
+  }
+  return row;
+}
+async function currentUser(env, request) {
+  const u = await userFromAuth(env, request);
+  return u || (await getDemoUser(env));
+}
 
 async function seedUser(env, uid, name) {
   const fname = (name || "").split(" ")[0] || "candidato";
@@ -176,8 +190,8 @@ export async function onRequest(context) {
       return json({ ok: true });
     }
 
-    // ---------- GET autenticado (sem corpo) ----------
-    const u = await userFromAuth(env, request);
+    // ---------- usuário (MODO TESTE: cai no demo se não houver login) ----------
+    const u = await currentUser(env, request);
     if (p === "/api/me") {
       if (!u) return json({ error: "unauth" }, 401);
       const pr = await env.DB.prepare("SELECT * FROM profiles WHERE user_id=?").bind(u.id).first();

@@ -77,7 +77,7 @@
 <body>
 
 <!-- AUTH -->
-<div class="auth" id="auth">
+<div class="auth hidden" id="auth">
   <div class="auth-box">
     <div class="auth-brand"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg><span><span style="font-weight:400">Minha</span> Carreira</span></div>
     <h2>Evolua para o próximo nível</h2>
@@ -305,7 +305,7 @@ function boot(){
   }).catch(function(){localStorage.removeItem('mc_token');$('auth').classList.remove('hidden');$('shell').classList.add('hidden')});
 }
 (function(){var q=new URLSearchParams(location.search);if(q.get('token')){token=q.get('token');localStorage.setItem('mc_token',token);history.replaceState({},'','/app.html')}var er=q.get('error');if(er){var m={linkedin_off:'Login com LinkedIn não configurado no servidor.',google_off:'Login com Google não configurado no servidor.',linkedin_denied:'Login cancelado.',google_denied:'Login cancelado.',linkedin_fail:'Falha ao conectar. Tente novamente.',google_fail:'Falha ao conectar. Tente novamente.'}[er]||'Erro no login.';history.replaceState({},'','/app.html');setTimeout(function(){$('authErr').textContent=m;$('authErr').classList.remove('hidden')},50)}})();
-if(token)boot();
+boot(); // MODO TESTE: sem login, entra direto
 </script>
 </body>
 </html>
