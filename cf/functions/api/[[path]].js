@@ -108,6 +108,46 @@ export async function onRequest(context) {
       return redirect("/app.html?token=" + tok);
     }
 
+    // ---------- Google OAuth ----------
+    if (p === "/api/auth/google/start") {
+      if (!env.GOOGLE_CLIENT_ID) return redirect("/app.html?error=google_off");
+      const u = "https://accounts.google.com/o/oauth2/v2/auth?" + new URLSearchParams({
+        response_type: "code", client_id: env.GOOGLE_CLIENT_ID,
+        redirect_uri: env.GOOGLE_REDIRECT || url.origin + "/api/auth/google/callback",
+        scope: "openid email profile", state: newToken(), access_type: "online", prompt: "select_account",
+      });
+      return redirect(u);
+    }
+    if (p === "/api/auth/google/callback") {
+      const code = url.searchParams.get("code");
+      if (!code) return redirect("/app.html?error=google_denied");
+      const gredir = env.GOOGLE_REDIRECT || url.origin + "/api/auth/google/callback";
+      let info;
+      try {
+        const tr = await fetch("https://oauth2.googleapis.com/token", {
+          method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ grant_type: "authorization_code", code, redirect_uri: gredir, client_id: env.GOOGLE_CLIENT_ID, client_secret: env.GOOGLE_CLIENT_SECRET }),
+        });
+        const tj = await tr.json();
+        const ur = await fetch("https://openidconnect.googleapis.com/v1/userinfo", { headers: { Authorization: "Bearer " + tj.access_token } });
+        info = await ur.json();
+      } catch (e) { return redirect("/app.html?error=google_fail"); }
+      const email = (info.email || "").toLowerCase(), name = info.name || "", pic = info.picture || "";
+      if (!email) return redirect("/app.html?error=google_fail");
+      let row = await env.DB.prepare("SELECT * FROM users WHERE email=?").bind(email).first();
+      let uid;
+      if (row) {
+        uid = row.id;
+        await env.DB.prepare("UPDATE users SET picture=CASE WHEN picture='' OR picture IS NULL THEN ? ELSE picture END, name=CASE WHEN name='' OR name IS NULL THEN ? ELSE name END WHERE id=?").bind(pic, name, uid).run();
+      } else {
+        const r = await env.DB.prepare("INSERT INTO users(email,name,picture,pw_salt,pw_hash) VALUES(?,?,?,?,?)").bind(email, name, pic, "", "").run();
+        uid = r.meta.last_row_id; await seedUser(env, uid, name);
+      }
+      const tok = newToken();
+      await env.DB.prepare("INSERT INTO sessions(token,user_id) VALUES(?,?)").bind(tok, uid).run();
+      return redirect("/app.html?token=" + tok);
+    }
+
     const body = (method === "POST" || method === "PUT") ? await request.json().catch(() => ({})) : {};
 
     // ---------- público ----------
@@ -203,6 +243,15 @@ export async function onRequest(context) {
       const usr = `Tema: ${body.topic || ""}. Tom: ${body.tone || "profissional e direto"}. Setor: ${pr.setor}. Senioridade: ${pr.senioridade}.`;
       let post; try { post = await ai(env, sys, usr, 700); } catch (e) { return json({ error: e.message }, 502); }
       return json({ post });
+    }
+    if (p === "/api/ai/import-cv") {
+      const text = (body.text || "").trim().slice(0, 14000);
+      if (text.length < 40) return json({ error: "Texto do currículo muito curto." }, 400);
+      const sys = 'Você extrai dados de carreira de um currículo/perfil de LinkedIn em PT-BR. A partir do texto, devolva JSON com: {"headline":"headline curta e forte para LinkedIn","sobre":"resumo em 2-3 frases na 1a pessoa","setor":"área/indústria","senioridade":"ex: Júnior, Pleno, Sênior ou Liderança","objetivo":"objetivo de carreira provável"}.';
+      let out; try { out = await aiJson(env, sys, text, 1200); } catch (e) { return json({ error: e.message }, 502); }
+      await env.DB.prepare("UPDATE profiles SET headline=?, sobre=?, setor=?, senioridade=?, objetivo=? WHERE user_id=?")
+        .bind(out.headline || "", out.sobre || "", out.setor || "", out.senioridade || "", out.objetivo || "", u.id).run();
+      return json(out);
     }
     if (p === "/api/messages" && method === "POST") {
       const tid = body.thread, b = (body.body || "").trim();

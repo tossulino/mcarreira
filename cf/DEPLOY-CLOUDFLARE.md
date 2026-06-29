@@ -30,10 +30,13 @@ Bundle a publicar = esta pasta `cf/` (contém `index.html`, `app.html`, `functio
 No projeto Pages → **Settings**:
 - **Bindings → Add → D1 database**: variável **`DB`** → selecione `minhacarreira`.
 - **Bindings → Add → Workers AI**: variável **`AI`** — IA nativa da Cloudflare, **sem chave**.
-- **Variables and Secrets** (só quando for ligar o login do LinkedIn):
-  - `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`
-  - `LINKEDIN_REDIRECT` = `https://mcarreira.com.br/api/auth/linkedin/callback`
+- **Variables and Secrets** (login social — adicione os que for usar):
+  - `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET` (app em linkedin.com/developers)
+  - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (OAuth client em console.cloud.google.com)
   - `AI_MODEL` (opcional) = `@cf/meta/llama-3.3-70b-instruct-fp8-fast`
+  - Redirect URIs a cadastrar em cada provedor:
+    `https://mcarreira.pages.dev/api/auth/{linkedin|google}/callback`
+    `https://mcarreira.com.br/api/auth/{linkedin|google}/callback`
 - **Re-deploy** (Deployments → ⋯ → Retry deployment) para as variáveis/binding valerem.
 
 ## 5. Domínio personalizado
