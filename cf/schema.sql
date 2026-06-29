@@ -27,3 +27,10 @@ CREATE TABLE IF NOT EXISTS jobfit(
   atende TEXT, gaps TEXT, plano TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS leads(
   id INTEGER PRIMARY KEY, email TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+-- Jornada de evolução de líderes
+CREATE TABLE IF NOT EXISTS assessments(
+  id INTEGER PRIMARY KEY, user_id INTEGER, nivel_atual TEXT, nivel_alvo TEXT,
+  scores TEXT, resumo TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS dev_plans(
+  id INTEGER PRIMARY KEY, user_id INTEGER, gaps TEXT, trilha TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP);

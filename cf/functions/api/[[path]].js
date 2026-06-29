@@ -184,6 +184,18 @@ export async function onRequest(context) {
       return json({ user: { id: u.id, name: u.name, email: u.email, picture: u.picture || "" }, profile: pr || {} });
     }
     if (p === "/api/overview") { if (!u) return json({ error: "unauth" }, 401); return json(await overview(env, u)); }
+    if (p === "/api/journey") {
+      if (!u) return json({ error: "unauth" }, 401);
+      const pr = await env.DB.prepare("SELECT * FROM profiles WHERE user_id=?").bind(u.id).first();
+      const a = await env.DB.prepare("SELECT * FROM assessments WHERE user_id=? ORDER BY id DESC LIMIT 1").bind(u.id).first();
+      const pl = await env.DB.prepare("SELECT * FROM dev_plans WHERE user_id=? ORDER BY id DESC LIMIT 1").bind(u.id).first();
+      return json({
+        profile: pr || {},
+        assessment: a ? { nivel_atual: a.nivel_atual, nivel_alvo: a.nivel_alvo, scores: JSON.parse(a.scores || "{}"), meta: JSON.parse(a.resumo || "{}") } : null,
+        plan: pl ? { gaps: JSON.parse(pl.gaps || "[]"), trilha: JSON.parse(pl.trilha || "[]") } : null,
+        ai_enabled: !!env.AI,
+      });
+    }
     if (p === "/api/threads") { if (!u) return json({ error: "unauth" }, 401); return json({ threads: await listThreads(env, u) }); }
     if (p === "/api/messages" && method === "GET") {
       if (!u) return json({ error: "unauth" }, 401);
@@ -243,6 +255,25 @@ export async function onRequest(context) {
       const usr = `Tema: ${body.topic || ""}. Tom: ${body.tone || "profissional e direto"}. Setor: ${pr.setor}. Senioridade: ${pr.senioridade}.`;
       let post; try { post = await ai(env, sys, usr, 700); } catch (e) { return json({ error: e.message }, 502); }
       return json({ post });
+    }
+    if (p === "/api/diagnose") {
+      const pr = await env.DB.prepare("SELECT * FROM profiles WHERE user_id=?").bind(u.id).first();
+      const comps = ["Liderança e desenvolvimento de pessoas", "Comunicação e influência", "Pensamento estratégico / visão de negócio", "Execução e entrega de resultados", "Gestão financeira / orçamentária", "Gestão de mudança e adaptabilidade", "Autogestão e inteligência emocional"];
+      const sys = 'Você é um avaliador de competências de liderança em PT-BR. Calibre as notas (0-100) de cada competência cruzando a AUTOAVALIAÇÃO com as EVIDÊNCIAS (respostas situacionais + currículo). Seja realista: se a evidência não sustenta a autonota, ajuste para baixo. Devolva JSON: {"scores":{"<nome EXATO da competência>":<inteiro 0-100>, ...as 7},"resumo":"2-3 frases sobre onde a pessoa está hoje","leitura":"o que separa ela do nível-alvo, em 2-3 frases"}';
+      const usr = `Nível atual: ${body.nivel_atual}. Nível-alvo: ${body.nivel_alvo}.\nAUTOAVALIAÇÃO (0-100): ${JSON.stringify(body.self || {})}\nRESPOSTAS SITUACIONAIS: ${JSON.stringify(body.sit || {})}\nCURRÍCULO: headline=${pr ? pr.headline : ""}; sobre=${pr ? pr.sobre : ""}; setor=${pr ? pr.setor : ""}; senioridade=${pr ? pr.senioridade : ""}.\nUse EXATAMENTE estes nomes nas chaves de scores: ${comps.join(" | ")}`;
+      let out; try { out = await aiJson(env, sys, usr, 1100); } catch (e) { return json({ error: e.message }, 502); }
+      await env.DB.prepare("INSERT INTO assessments(user_id,nivel_atual,nivel_alvo,scores,resumo) VALUES(?,?,?,?,?)")
+        .bind(u.id, body.nivel_atual || "", body.nivel_alvo || "", JSON.stringify(out.scores || {}), JSON.stringify({ resumo: out.resumo || "", leitura: out.leitura || "" })).run();
+      return json(out);
+    }
+    if (p === "/api/trilha") {
+      const a = await env.DB.prepare("SELECT * FROM assessments WHERE user_id=? ORDER BY id DESC LIMIT 1").bind(u.id).first();
+      if (!a) return json({ error: "Faça o diagnóstico primeiro." }, 400);
+      const sys = 'Você é um consultor de desenvolvimento de líderes em PT-BR. Dadas as notas de competência e o nível-alvo, escolha as 3 competências que mais destravam a promoção (baixas e relevantes para o alvo) e crie uma trilha prática. Devolva JSON: {"gaps":[{"competencia":"...","nota":<int>,"porque":"por que trava a promoção"}],"trilha":[{"competencia":"...","acoes":["ação prática 1","2","3"],"aprendizado":["curso/livro exemplo 1","2"],"marcos":["marco mês 1","mês 2","mês 3"]}]}';
+      const usr = `Nível atual: ${a.nivel_atual}. Nível-alvo: ${a.nivel_alvo}. Notas (0-100): ${a.scores}`;
+      let out; try { out = await aiJson(env, sys, usr, 1700); } catch (e) { return json({ error: e.message }, 502); }
+      await env.DB.prepare("INSERT INTO dev_plans(user_id,gaps,trilha) VALUES(?,?,?)").bind(u.id, JSON.stringify(out.gaps || []), JSON.stringify(out.trilha || [])).run();
+      return json(out);
     }
     if (p === "/api/ai/import-cv") {
       const text = (body.text || "").trim().slice(0, 14000);
